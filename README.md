@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # BIT-MiniCC
 BIT Mini C Compiler is a C compiler framework in Java for teaching.
 
@@ -24,5 +23,3 @@ BIT Mini C Compiler is a C compiler framework in Java for teaching.
 
 基于BIT-MiniCC实现简单的中间代码生成功能
 =======
-# BIT-MiniCC-icgen
->>>>>>> fc3a763eb2f5651614076a9134ed365afe34d7fa
