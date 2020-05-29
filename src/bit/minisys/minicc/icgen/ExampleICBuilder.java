@@ -168,24 +168,30 @@ public class ExampleICBuilder implements ASTVisitor{
 			}else if(binaryExpression.expr2 instanceof ASTIntegerConstant) {
 				opnd1 = binaryExpression.expr2;
 			}else if(binaryExpression.expr2 instanceof ASTBinaryExpression) {
-				ASTBinaryExpression value = (ASTBinaryExpression)binaryExpression.expr2;
+			/*	ASTBinaryExpression value = (ASTBinaryExpression)binaryExpression.expr2;
 				op = value.op.value;
 				visit(value.expr1);
 				opnd1 = map.get(value.expr1);
 				visit(value.expr2);
-				opnd2 = map.get(value.expr2);
+				opnd2 = map.get(value.expr2);*/
+				visit(binaryExpression.expr2);
+				opnd1 = map.get(binaryExpression.expr2);
 			}else if (binaryExpression.expr2 instanceof ASTUnaryExpression) {
-				ASTUnaryExpression value = (ASTUnaryExpression)binaryExpression.expr2;
+			/*	ASTUnaryExpression value = (ASTUnaryExpression)binaryExpression.expr2;
 				op = value.op.value;
 				visit(value.expr);
 				opnd1 = map.get(value.expr);
-				opnd2 = null;
+				opnd2 = null;*/
+				visit(binaryExpression.expr2);
+				opnd1 = map.get(binaryExpression.expr2);
 			}else if (binaryExpression.expr2 instanceof ASTPostfixExpression) {
-				ASTPostfixExpression value = (ASTPostfixExpression)binaryExpression.expr2;
+			/*	ASTPostfixExpression value = (ASTPostfixExpression)binaryExpression.expr2;
 				op = value.op.value;
 				visit(value.expr);
 				opnd1 = map.get(value.expr);
-				opnd2 = null;
+				opnd2 = null;*/
+				visit(binaryExpression.expr2);
+				opnd1 = map.get(binaryExpression.expr2);
 			}
 		}else if (op.equals("+")||op.equals("-")||op.equals("*")||op.equals("/")||op.equals("%")||op.equals("<<")||op.equals(">>")||op.equals("<")||op.equals(">")||op.equals(">=")||op.equals("<=")||op.equals("==")||op.equals("!=")) {
 			//加法操作，结果存储到中间变量
