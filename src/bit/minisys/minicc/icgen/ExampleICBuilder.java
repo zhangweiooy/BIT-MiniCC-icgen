@@ -5,12 +5,10 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
 import bit.minisys.minicc.parser.ast.*;
-// 一个简单样例，只实现了加法
 public class ExampleICBuilder implements ASTVisitor{
 
-	private Map<ASTNode, ASTNode> map;				// 使用map存储子节点的返回值，key对应子节点，value对应返回值，value目前类别包括ASTIdentifier,ASTIntegerConstant,TemportaryValue...
+	private Map<ASTNode, ASTNode> map;				// 使用map存储子节点的返回值，key对应子节点，value对应返回值，value目前类别包括ASTIdentifier,TemportaryValue
 	private List<Quat> quats;						// 生成的四元式列表
 	private Integer tmpId;							// 临时变量编号
 	
@@ -48,7 +46,6 @@ public class ExampleICBuilder implements ASTVisitor{
 
 	@Override
 	public void visit(ASTDeclaration declaration) throws Exception {
-		// TODO Auto-generated method stub
 		for (ASTInitList  iterable : declaration.initLists) {
 			SymbolEntry se = new SymbolEntry();
 			se.name = ((ASTVariableDeclarator)iterable.declarator).identifier.value;
@@ -109,25 +106,21 @@ public class ExampleICBuilder implements ASTVisitor{
 
 	@Override
 	public void visit(ASTArrayDeclarator arrayDeclarator) throws Exception {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void visit(ASTVariableDeclarator variableDeclarator) throws Exception {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void visit(ASTFunctionDeclarator functionDeclarator) throws Exception {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void visit(ASTParamsDeclarator paramsDeclarator) throws Exception {
-		// TODO Auto-generated method stub
 		SymbolTable st;
 		st = funcSymbolTable.get(funcName);
 		SymbolEntry sEntry = new SymbolEntry();
@@ -146,7 +139,6 @@ public class ExampleICBuilder implements ASTVisitor{
 
 	@Override
 	public void visit(ASTArrayAccess arrayAccess) throws Exception {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -158,43 +150,25 @@ public class ExampleICBuilder implements ASTVisitor{
 		ASTNode opnd2 = null;
 		
 		if (op.equals("=")||op.equals("-=")||op.equals("+=")) {
-			// 赋值操作
-			// 获取被赋值的对象res
+			// 赋值操作,获取被赋值的对象res
 			visit(binaryExpression.expr1);
 			res = map.get(binaryExpression.expr1);
-			// 判断源操作数类型, 为了避免出现a = b + c; 生成两个四元式：tmp1 = b + c; a = tmp1;的情况。也可以用别的方法解决
 			if (binaryExpression.expr2 instanceof ASTIdentifier) {
 				opnd1 = binaryExpression.expr2;
 			}else if(binaryExpression.expr2 instanceof ASTIntegerConstant) {
 				opnd1 = binaryExpression.expr2;
 			}else if(binaryExpression.expr2 instanceof ASTBinaryExpression) {
-			/*	ASTBinaryExpression value = (ASTBinaryExpression)binaryExpression.expr2;
-				op = value.op.value;
-				visit(value.expr1);
-				opnd1 = map.get(value.expr1);
-				visit(value.expr2);
-				opnd2 = map.get(value.expr2);*/
 				visit(binaryExpression.expr2);
 				opnd1 = map.get(binaryExpression.expr2);
 			}else if (binaryExpression.expr2 instanceof ASTUnaryExpression) {
-			/*	ASTUnaryExpression value = (ASTUnaryExpression)binaryExpression.expr2;
-				op = value.op.value;
-				visit(value.expr);
-				opnd1 = map.get(value.expr);
-				opnd2 = null;*/
 				visit(binaryExpression.expr2);
 				opnd1 = map.get(binaryExpression.expr2);
 			}else if (binaryExpression.expr2 instanceof ASTPostfixExpression) {
-			/*	ASTPostfixExpression value = (ASTPostfixExpression)binaryExpression.expr2;
-				op = value.op.value;
-				visit(value.expr);
-				opnd1 = map.get(value.expr);
-				opnd2 = null;*/
 				visit(binaryExpression.expr2);
 				opnd1 = map.get(binaryExpression.expr2);
 			}
 		}else if (op.equals("+")||op.equals("-")||op.equals("*")||op.equals("/")||op.equals("%")||op.equals("<<")||op.equals(">>")||op.equals("<")||op.equals(">")||op.equals(">=")||op.equals("<=")||op.equals("==")||op.equals("!=")) {
-			//加法操作，结果存储到中间变量
+			//各种二元运算操作，结果存储到中间变量
 			res = new TemporaryValue(++tmpId);
 			//临时变量储存到符号表
 			SymbolEntry sEntry = new SymbolEntry();
@@ -212,7 +186,6 @@ public class ExampleICBuilder implements ASTVisitor{
 			opnd2 = map.get(binaryExpression.expr2);
 		}else {
 		}
-		
 		// build quat
 		newQuat(op, res, opnd1, opnd2);
 		map.put(binaryExpression, res);
@@ -220,7 +193,6 @@ public class ExampleICBuilder implements ASTVisitor{
 
 	@Override
 	public void visit(ASTBreakStatement breakStat) throws Exception {
-		// TODO Auto-generated method stub
 		if (this.iterationFlag > 0) {
 			this.iterationFlag--;
 			this.breakFlag = true;
@@ -232,19 +204,16 @@ public class ExampleICBuilder implements ASTVisitor{
 
 	@Override
 	public void visit(ASTContinueStatement continueStatement) throws Exception {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void visit(ASTCastExpression castExpression) throws Exception {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void visit(ASTCharConstant charConst) throws Exception {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -257,12 +226,10 @@ public class ExampleICBuilder implements ASTVisitor{
 				visit((ASTStatement)node);
 			}
 		}
-		
 	}
 
 	@Override
 	public void visit(ASTConditionExpression conditionExpression) throws Exception {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -308,13 +275,11 @@ public class ExampleICBuilder implements ASTVisitor{
 
 	@Override
 	public void visit(ASTFloatConstant floatConst) throws Exception {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void visit(ASTFunctionCall funcCall) throws Exception {
-		// TODO Auto-generated method stub
 		if (this.globalSymbolTable.getSymbolEntryByName(((ASTIdentifier)funcCall.funcname).value) == null) {
 			errors.add("_var_not_defined.c"+":"+((ASTIdentifier)funcCall.funcname).tokenId.toString()+"\t"+((ASTIdentifier)funcCall.funcname).value);
 		}
@@ -325,7 +290,6 @@ public class ExampleICBuilder implements ASTVisitor{
 
 	@Override
 	public void visit(ASTGotoStatement gotoStat) throws Exception {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -346,7 +310,6 @@ public class ExampleICBuilder implements ASTVisitor{
 
 	@Override
 	public void visit(ASTInitList initList) throws Exception {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -357,13 +320,11 @@ public class ExampleICBuilder implements ASTVisitor{
 
 	@Override
 	public void visit(ASTIterationDeclaredStatement iterationDeclaredStat) throws Exception {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void visit(ASTIterationStatement iterationStat) throws Exception {
-		// TODO Auto-generated method stub
 		for (ASTExpression iterable : iterationStat.init) {
 			visit(iterable);
 		}
@@ -384,19 +345,16 @@ public class ExampleICBuilder implements ASTVisitor{
 
 	@Override
 	public void visit(ASTLabeledStatement labeledStat) throws Exception {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void visit(ASTMemberAccess memberAccess) throws Exception {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void visit(ASTPostfixExpression postfixExpression) throws Exception {
-		// TODO Auto-generated method stub
 		String op = postfixExpression.op.value;
 		ASTNode res = null;
 		ASTNode opnd1 = null;
@@ -422,15 +380,13 @@ public class ExampleICBuilder implements ASTVisitor{
 			}
 		}else {
 		}
-		
-		// build quat
+
 		newQuat(op, res, opnd1, opnd2);
 		map.put(postfixExpression, res);
 	}
 
 	@Override
 	public void visit(ASTReturnStatement returnStat) throws Exception {
-		// TODO Auto-generated method stub
 		if (returnStat.expr != null) {
 			for (ASTExpression iterable : returnStat.expr) {
 				visit(iterable);
@@ -440,39 +396,32 @@ public class ExampleICBuilder implements ASTVisitor{
 
 	@Override
 	public void visit(ASTSelectionStatement selectionStat) throws Exception {
-		// TODO Auto-generated method stub
 		visit(selectionStat.cond.get(0));
-		
-		/**int jtIndex = **/newQuat("jt",new JumpIndex(this.quats.size()-1+3) ,null ,null );
+		newQuat("jt",new JumpIndex(this.quats.size()-1+3) ,null ,null );
 		int jfIndex = newQuat("jf", null, null, null);
 		visit(selectionStat.then);
 		int jIndex = newQuat("j", null, null, null);
 		this.quats.get(jfIndex).setRes(new JumpIndex(this.quats.size()-1+1));
 		visit(selectionStat.otherwise);
 		this.quats.get(jIndex).setRes(new JumpIndex(this.quats.size()-1+1));
-
 	}
 
 	@Override
 	public void visit(ASTStringConstant stringConst) throws Exception {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void visit(ASTTypename typename) throws Exception {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void visit(ASTUnaryExpression unaryExpression) throws Exception {
-		// TODO Auto-generated method stub
 		String op = unaryExpression.op.value;
 		ASTNode res = null;
 		ASTNode opnd1 = null;
 		ASTNode opnd2 = null;
-		
 		if (op.equals("++")||op.equals("--")||op.equals("!")||op.equals("~")) {
 			visit(unaryExpression.expr);
 			res = map.get(unaryExpression.expr);
@@ -493,15 +442,12 @@ public class ExampleICBuilder implements ASTVisitor{
 			}
 		}else {
 		}
-		
-		// build quat
 		newQuat(op, res, opnd1, opnd2);
 		map.put(unaryExpression, res);
 	}
 
 	@Override
 	public void visit(ASTUnaryTypename unaryTypename) throws Exception {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -524,14 +470,13 @@ public class ExampleICBuilder implements ASTVisitor{
 		for (ASTParamsDeclarator e : (((ASTFunctionDeclarator)functionDefine.declarator).params)) {//遍历函数的参数
 			visit(e);
 		}
-		
+
 		visit(functionDefine.body);//函数体
 		this.funcName = null;
 	}
 
 	@Override
 	public void visit(ASTDeclarator declarator) throws Exception {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -576,8 +521,5 @@ public class ExampleICBuilder implements ASTVisitor{
 
 	@Override
 	public void visit(ASTToken token) throws Exception {
-		// TODO Auto-generated method stub
-		
 	}
-
 }

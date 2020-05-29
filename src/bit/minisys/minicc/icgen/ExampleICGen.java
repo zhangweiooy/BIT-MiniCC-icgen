@@ -16,11 +16,6 @@ public class ExampleICGen implements IMiniCCICGen{
 		// fetch AST Tree
 		ObjectMapper mapper = new ObjectMapper();
 		ASTCompilationUnit program = (ASTCompilationUnit)mapper.readValue(new File(iFile), ASTCompilationUnit.class);
-	   
-		/*
-	     *  You should build SymbolTable here or get it from semantic analysis ..
-	     *  This ic generator skips this step because it only implements addition and subtraction
-	     */
 		
 		// use visitor pattern to build IR
 		ExampleICBuilder icBuilder = new ExampleICBuilder();
@@ -33,5 +28,4 @@ public class ExampleICGen implements IMiniCCICGen{
 		System.out.println("5. ICGen finished!");
 		return oFile;
 	}
-
 }
