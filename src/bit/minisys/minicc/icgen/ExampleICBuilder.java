@@ -70,6 +70,40 @@ public class ExampleICBuilder implements ASTVisitor{
 					this.funcSymbolTable.put(funcName, st);
 				}
 			}
+			if(!iterable.exprs.isEmpty()) {//带初始化的定义
+				String op = "=";
+				ASTNode res = ((ASTVariableDeclarator)iterable.declarator).identifier;
+				ASTNode opnd1 = null;
+				ASTNode opnd2 = null;
+				ASTExpression expr = iterable.exprs.get(0);
+				if (expr instanceof ASTIdentifier) {
+					opnd1 = expr;
+				}else if(expr instanceof ASTIntegerConstant) {
+					opnd1 = expr;
+				}else if(expr instanceof ASTBinaryExpression) {
+					ASTBinaryExpression value = (ASTBinaryExpression)expr;
+					op = value.op.value;
+					visit(value.expr1);
+					opnd1 = map.get(value.expr1);
+					visit(value.expr2);
+					opnd2 = map.get(value.expr2);
+				}else if (expr instanceof ASTUnaryExpression) {
+					ASTUnaryExpression value = (ASTUnaryExpression)expr;
+					op = value.op.value;
+					visit(value.expr);
+					opnd1 = map.get(value.expr);
+					opnd2 = null;
+				}else if (expr instanceof ASTPostfixExpression) {
+					ASTPostfixExpression value = (ASTPostfixExpression)expr;
+					op = value.op.value;
+					visit(value.expr);
+					opnd1 = map.get(value.expr);
+					opnd2 = null;
+				}
+				
+				newQuat(op, res, opnd1, opnd2);
+				map.put(iterable, res);
+			}
 		}
 	}
 
@@ -154,7 +188,7 @@ public class ExampleICBuilder implements ASTVisitor{
 				opnd2 = null;
 			}
 		}else if (op.equals("+")||op.equals("-")||op.equals("*")||op.equals("/")||op.equals("%")||op.equals("<<")||op.equals(">>")||op.equals("<")||op.equals(">")||op.equals(">=")||op.equals("<=")||op.equals("==")||op.equals("!=")) {
-			// 加法操作，结果存储到中间变量
+			//加法操作，结果存储到中间变量
 			res = new TemporaryValue(++tmpId);
 			//临时变量储存到符号表
 			SymbolEntry sEntry = new SymbolEntry();

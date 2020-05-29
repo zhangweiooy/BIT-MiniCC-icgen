@@ -1,15 +1,7 @@
 int b = 1;
 
-int f1(int x,int y){
-	int z = x + y;
-	return z;
-}
-void f2(){
-	Mars_PrintStr("in f2\n");
-	return;
-}
-
-int main(){
+int main()
+{
 	int a1 = 1;
 	int a2 = 2;
 	int res;
@@ -17,29 +9,28 @@ int main(){
 	res = !a1;
 	res = ~a1;
 	// binary oper
-	res = a1+a2;
-	res = a1%a2;
+	res = a1 + a2;
+	res = a1 % a2;
 	res = a1 << a2;
 	// selfchange
 	res = a1++;
 	res = ++a1;
 	// short-circuit evaluation and "if" control-flow
-	if(a1 > a2){
-		res = f1(a1,a2);
-	}else if(!a1){
+	if (a1 > a2)
+	{
+		res = a1 + a2;
+	}
+	else
+	{
 		// b is global
-		res = f1(b,a2);
+		res = b + a2;
 	}
 	// "for" control-flow
 	int i;
-	for(i = 0; i<a1; i++){
-		break;
-		continue;
+	for (i = 0; i < a1; i++)
+	{
+		b = b * 2;
 		res += 1;
 	}
-	// label and goto
-	k:
-	goto k;
-	// return
 	return 0;
 }
